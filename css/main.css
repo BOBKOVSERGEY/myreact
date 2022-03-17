@@ -1,0 +1,29 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+.header {
+    background-color: #f8f8f8;
+    padding: 10px 15px;
+}
+.logo {
+    max-width: 100px;
+}
+.clock {
+    margin-top: 15px;
+    background: #f8f8f8;
+    border-radius: 5px;
+    padding: 15px;
+}
+
+.lot {
+    margin-top: 25px;
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 5px;
+}
+.app {
+    max-width: 500px;
+    padding: 25px;
+}
