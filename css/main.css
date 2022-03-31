@@ -3,6 +3,10 @@
     margin: 0;
     box-sizing: border-box;
 }
+body {
+    padding-left: 15px;
+    padding-right: 15px;
+}
 .header {
     background-color: #f8f8f8;
     padding: 10px 15px;
