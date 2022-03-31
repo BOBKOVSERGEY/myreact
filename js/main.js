@@ -52,77 +52,60 @@ let state = {
     lots: null
 }
 
-const VDom = {
-    createElement: (type, config, ...children) => {
-        const key = config ? (config.key || null) : null;
-        const props = config || {};
 
-        if (children.length === 1) {
-            props.children = children[0]
-        } else {
-            props.children = children;
-        }
-
-        return {
-            type,
-            key,
-            props
-        }
-    }
-}
 
 function App( { state } )
 {
-    return VDom.createElement('app', { className: 'app' },
-        VDom.createElement(Header),
-        VDom.createElement(Clock, { time: state.time }),
-        VDom.createElement(Lots, { lots: state.lots }),
+    return React.createElement('app', { className: 'app' },
+        React.createElement(Header),
+        React.createElement(Clock, { time: state.time }),
+        React.createElement(Lots, { lots: state.lots }),
     )
 }
 
 
 function Header() {
-    return VDom.createElement('header', { className: 'header' },
-            VDom.createElement(Logo)
+    return React.createElement('header', { className: 'header' },
+            React.createElement(Logo)
     )
 }
 
 
 
 function Logo() {
-    return VDom.createElement('img', { className: 'logo', src: 'images/logo.svg' })
+    return React.createElement('img', { className: 'logo', src: 'images/logo.svg' })
 }
 
 function Clock({ time })
 {
     const isDay = time.getHours() >= 7 && time.getHours() <= 21;
 
-    return VDom.createElement('div', { className: 'clock' },
-        VDom.createElement('span', { className: 'value' }, time.toLocaleTimeString()),
-        VDom.createElement('span', { className: isDay ? 'icon day' : 'icon night' })
+    return React.createElement('div', { className: 'clock' },
+        React.createElement('span', { className: 'value' }, time.toLocaleTimeString()),
+        React.createElement('span', { className: isDay ? 'icon day' : 'icon night' })
     )
 }
 
 function Loading() {
-    return VDom.createElement('div', { className: 'loading' }, 'loading...')
+    return React.createElement('div', { className: 'loading' }, 'loading...')
 }
 
 
 function Lots({ lots }) {
     
     if(lots === null) {
-        return VDom.createElement(Loading);
+        return React.createElement(Loading);
     }
-    return VDom.createElement('div', { className: 'lots' },
-        lots.map((lot) => VDom.createElement(Lot, { lot, key:lot.id }))
+    return React.createElement('div', { className: 'lots' },
+        lots.map((lot) => React.createElement(Lot, { lot, key:lot.id }))
     );
 }
 
-function Lot({lot, key}) {
-    return VDom.createElement('article', { className: 'lot', key },
-        VDom.createElement('div', { className: 'price' }, lot.price),
-        VDom.createElement('h1', { }, lot.name),
-        VDom.createElement('p', { }, lot.description)
+function Lot({lot}) {
+    return React.createElement('article', { className: 'lot' },
+        React.createElement('div', { className: 'price' }, lot.price),
+        React.createElement('h1', { }, lot.name),
+        React.createElement('p', { }, lot.description)
         );
 }
 
@@ -232,8 +215,8 @@ function createRealNodeByVirtual(virtual) {
 }
 
 function renderView(state) {
-    render(
-        VDom.createElement(App, { state }),
+    ReactDOM.render(
+        React.createElement(App, { state }),
         document.getElementById('root')
     );
 }
