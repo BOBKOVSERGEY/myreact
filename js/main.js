@@ -56,57 +56,72 @@ let state = {
 
 function App( { state } )
 {
-    return React.createElement('app', { className: 'app' },
-        React.createElement(Header),
-        React.createElement(Clock, { time: state.time }),
-        React.createElement(Lots, { lots: state.lots }),
+    return (
+        <div className="app">
+            <Header/>
+            <Clock time={state.time} />
+            <Lots lots={state.lots}/>
+        </div>
     )
 }
 
 
 function Header() {
-    return React.createElement('header', { className: 'header' },
-            React.createElement(Logo)
+    return (
+        <header className="header">
+            <Logo />
+        </header>
     )
 }
 
 
 
 function Logo() {
-    return React.createElement('img', { className: 'logo', src: 'images/logo.svg' })
+    return <img className="logo" src="images/logo.svg" alt="Logo" />
 }
 
 function Clock({ time })
 {
     const isDay = time.getHours() >= 7 && time.getHours() <= 21;
 
-    return React.createElement('div', { className: 'clock' },
-        React.createElement('span', { className: 'value' }, time.toLocaleTimeString()),
-        React.createElement('span', { className: isDay ? 'icon day' : 'icon night' })
+    return (
+        <div className="clock">
+            <span className="value">{time.toLocaleTimeString()}</span>
+            <span className={isDay ? 'icon day' : 'icon night'} />
+        </div>
     )
 }
 
 function Loading() {
-    return React.createElement('div', { className: 'loading' }, 'loading...')
+    return (
+        <div className="loading">
+            loading...
+        </div>
+    )
 }
 
 
 function Lots({ lots }) {
     
     if(lots === null) {
-        return React.createElement(Loading);
+        return <Loading/>;
     }
-    return React.createElement('div', { className: 'lots' },
-        lots.map((lot) => React.createElement(Lot, { lot, key:lot.id }))
-    );
+
+    return (
+        <div className="lots">
+            {lots.map((lot) =><Lot lot={lot} key={lot.id}/>)}
+        </div>
+    )
 }
 
 function Lot({lot}) {
-    return React.createElement('article', { className: 'lot' },
-        React.createElement('div', { className: 'price' }, lot.price),
-        React.createElement('h1', { }, lot.name),
-        React.createElement('p', { }, lot.description)
-        );
+    return (
+        <article className="lot">
+            <div className="price">{lot.price}</div>
+            <h1>{lot.name}</h1>
+            <p>{lot.description}</p>
+        </article>
+    )
 }
 
 function render(virtualDom, realDomRoot) {
@@ -216,7 +231,7 @@ function createRealNodeByVirtual(virtual) {
 
 function renderView(state) {
     ReactDOM.render(
-        React.createElement(App, { state }),
+        <App state={state} />,
         document.getElementById('root')
     );
 }
