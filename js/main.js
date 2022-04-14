@@ -58,23 +58,22 @@ class Store {
         this.listeners = [];
     }
 
-    subscribe (callback) {
-        this.listeners.push(callback);
+    subscribe (listener) {
+        this.listeners.push(listener);
+
+        return () => {
+            const index = this.listeners.indexOf(listener)
+            this.listeners.splice(index, 1)
+        }
     }
 
     getState() {
         return this.state;
     }
 
-    changeState(diff) {
-        this.state = {
-            ...this.state,
-            ...(typeof diff === 'function' ? diff(this.state) : diff)
-        }
-
-        this.listeners.forEach((listener) => {
-            listener();
-        })
+    setState(state) {
+        this.state = (typeof state === 'function' ? state(this.state) : state)
+        this.listeners.forEach((listener) => listener())
     }
 }
 
@@ -266,35 +265,55 @@ store.subscribe(() => {
     renderView(store.getState());
 });
 
+
+
 renderView(store.getState());
 
+function appReducer(state, action, params) {
+    switch (action) {
+        case 'setTime':
+            return {
+                ...state,
+                time: params.time
+            }
+        case 'setLots':
+            return {
+                ...state,
+                lots: params.lots
+            }
+        case 'changeLotPrice':
+            return {
+                ...state,
+                lots: state.lots.map((lot) => {
+                    if (lot.id === params.id) {
+                        return {
+                            ...lot,
+                            price: params.price
+                        }
+                    }
+                    return lot;
+                })
+            }
+        default:
+            return state
+    }
+}
+
 setInterval(()=> {
-    store.changeState({
-        time: new Date()
-    })
+    store.setState((state) => appReducer(state, 'setTime', {time: new Date()}))
 }, 1000);
 
 api.get('/lots').then((lots) => {
-    store.changeState({
-        lots
-    })
 
-    const onPrice = (data) => {
-        store.changeState((state) =>({
-            lots: state.lots.map((lot) => {
-                if (lot.id === data.id) {
-                    return {
-                        ...lot,
-                        price: data.price
-                    }
-                }
-                return lot;
-            })
-        }))
-    }
-    
+    store.setState((state) => appReducer(state, 'setLots', {lots}))
+
     lots.forEach((lot)=> {
-        stream.subscribe(`price-${lot.id}`, onPrice);
+        stream.subscribe(`price-${lot.id}`,  (data) => {
+            store.setState((state) => appReducer(state, 'changeLotPrice', {
+                id: data.id,
+                price: data.price
+            }))
+        });
     })
     
 })
