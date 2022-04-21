@@ -122,43 +122,11 @@ function changeLotPrice(id, price) {
 // Action creator
 
 
-class Store {
-    constructor(reducer, initialState) {
-        this.reducer = reducer
-        this.state = reducer(initialState, { type: null });
-        this.listeners = [];
-    }
 
-    subscribe (listener) {
-        this.listeners.push(listener);
-
-        return () => {
-            const index = this.listeners.indexOf(listener)
-            this.listeners.splice(index, 1)
-        }
-    }
-
-    getState() {
-        return this.state;
-    }
-
-    dispatch(action) {
-        this.state = this.reducer(this.state, action)
-        this.listeners.forEach((listener) => listener())
-    }
-}
 //##############################
 
-function combineReducers(reducers) {
-    return (state = {}, action) => {
-        const result = {};
-        Object.entries(reducers).forEach(([key, reducer]) => {
-            result[key] = reducer(state[key], action)
-        })
-        return result
-    }
-}
-const store = new Store(combineReducers({
+
+const store = Redux.createStore(Redux.combineReducers({
     clock: clockReducer,
     auction: auctionReducer
 }));
